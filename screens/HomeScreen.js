@@ -1,18 +1,19 @@
 import React from 'react';
-import { View, StyleSheet} from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet } from 'react-native';
 
-// body
-
-<h1>Titulo</h1>
+export default function Home() {
+  return (
+    <View style={styles.container}>
+      <Text>Tela Home</Text>
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
-
-// styles
-
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
-
-
-export default HomeScreen;
