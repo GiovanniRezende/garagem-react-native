@@ -1,18 +1,20 @@
-import React from 'react';
-import { View, StyleSheet} from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { useNavigation } from '@react-navigation/native';
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { useNavigation } from "@react-navigation/native";
+import MainComp from "../components/MainComp";
 
-// body
-
-<h1>Titulo</h1>
+const HomeScreen = () => {
+  return (
+    <View>
+      <MainComp />
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
-
-// styles
-
+  // styles
 });
-
 
 export default HomeScreen;
