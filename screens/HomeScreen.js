@@ -1,118 +1,155 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, FlatList } from 'react-native';
-// import BASE_URL from './src/config.js';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, StyleSheet } from 'react-native';
 
-export default function Home() {
-  const data = [
-    {
-      id: '1',
-      // imageSource: require('image1.png'),
-      title: 'Veículo',
-      categoria: 'Sedan',
-      marca: 'Toyota',
-      modelo: 'Corolla',
-      cor: 'Vermelho',
-      acessorio: 'Ar condicionado',
-    },
-    {
-      id: '2',
-      // imageSource: require('image2.png'),
-      title: 'Veículo',
-      categoria: 'Hatchback',
-      marca: 'Honda',
-      modelo: 'Civic',
-      cor: 'Azul',
-      acessorio: 'GPS',
-    },
-    {
-      id: '3',
-      // imageSource: require('image3.png'),
-      title: 'Veículo',
-      categoria: 'SUV',
-      marca: 'Ford',
-      modelo: 'Escape',
-      cor: 'Prata',
-      acessorio: 'Teto solar',
-    },
-    {
-      id: '4',
-      // imageSource: require('image4.png'),
-      title: 'Veículo',
-      categoria: 'Sedan',
-      marca: 'Hyundai',
-      modelo: 'Elantra',
-      cor: 'Preto',
-      acessorio: 'Bancos de couro',
-    },
-  ];
+const baseURL = 'http://localhost:19003/';
 
+const GarageScreen = () => {
+  const [vehicles, setVehicles] = useState([]);
+  const [colors, setColors] = useState([]);
+  const [accessories, setAccessories] = useState([]);
+  const [categories, setCategories] = useState([]);
+  
+  useEffect(() => {
+    loadVehicles();
+    loadColors();
+    loadAccessories();
+    loadCategories();
+  }, []);
+  
+  const loadVehicles = async () => {
+    try {
+      const response = await fetch(`${baseURL}/api/veiculos/`);
+      const data = await response.json();
+      
+      setVehicles(data);
+      
+      data.forEach(async (vehicle) => {
+        const imageUrl = await loadVehicleImage(vehicle.id);
+        vehicle.imageUrl = imageUrl;
+        setVehicles([...data]);
+      });
+    } catch (error) {
+      console.error('Erro ao carregar veículos', error);
+    }
+  };
+  
+  const loadVehicleImage = async (vehicleId) => {
+    try {
+      const response = await fetch(`${baseURL}/api/veiculos/${vehicleId}/imagem/`);
+      const data = await response.json();
+      return data.image_url;
+    } catch (error) {
+      console.error(`Erro ao carregar imagem do veículo ${vehicleId}`, error);
+      return '';
+    }
+  };
+  
+  const loadColors = async () => {
+    try {
+      const response = await fetch(`${baseURL}/api/cores/`);
+      const data = await response.json();
+      setColors(data);
+    } catch (error) {
+      console.error('Erro ao carregar cores', error);
+    }
+  };
+  
+  const loadAccessories = async () => {
+    try {
+      const response = await fetch(`${baseURL}/api/acessorios/`);
+      const data = await response.json();
+      setAccessories(data);
+    } catch (error) {
+      console.error('Erro ao carregar acessórios', error);
+    }
+  };
+  
+  const loadCategories = async () => {
+    try {
+      const response = await fetch(`${baseURL}/api/categorias/`);
+      const data = await response.json();
+      setCategories(data);
+    } catch (error) {
+      console.error('Erro ao carregar categorias', error);
+    }
+  };
+  
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Garagem</Text>
+    <View>
+    <View style={styles.header}>
+    <Text style={styles.headerText}>Garagem do Giovanni Gay</Text>
+    </View>
+    <View style={styles.cardContainer}>
+    {vehicles.map((vehicle) => (
+      <View key={vehicle.id} style={styles.card}>
+      <Image source={{ uri: vehicle.imageUrl }} style={styles.image} />
+      <Text>
+      <Text style={styles.boldText}>Descrição:</Text> {vehicle.descricao}
+      </Text>
+      <Text>
+      <Text style={styles.boldText}>Categoria:</Text> {categories.map((category) => category.descricao).join(', ')}
+      </Text>
+      <Text>
+      <Text style={styles.boldText}>Cores:</Text> {colors.map((color) => color.descricao).join(', ')}
+      </Text>
+      <Text>
+      <Text style={styles.boldText}>Ano:</Text> {vehicle.ano}
+      </Text>
+      <Text>
+      <Text style={styles.boldText}>Preço:</Text> R$ {vehicle.preco}
+      </Text>
+      <Text>
+      <Text style={styles.boldText}>Acessórios:</Text> {accessories.map((accessory) => accessory.descricao).join(', ')}
+      </Text>
       </View>
-      <FlatList
-        data={data}
-        keyExtractor={(item) => item.id}
-        numColumns={2}
-        renderItem={({ item }) => (
-          <Card
-            title={item.title}
-            categoria={item.categoria}
-            marca={item.marca}
-            modelo={item.modelo}
-            cor={item.cor}
-            acessorio={item.acessorio}
-          />
-        )}
-      />
-    </View>
-  );
-}
-
-function Card({ title, categoria, marca, modelo, cor, acessorio }) {
-  return (
-    <View style={styles.card}>
-      <Text style={styles.cardTitle}>{title}</Text>
-      <Text style={styles.cardItem}>Categoria: {categoria}</Text>
-      <Text style={styles.cardItem}>Marca: {marca}</Text>
-      <Text style={styles.cardItem}>Modelo: {modelo}</Text>
-      <Text style={styles.cardItem}>Cor: {cor}</Text>
-      <Text style={styles.cardItem}>Acessório: {acessorio}</Text>
-      {/* Adicione a imagem aqui se necessário */}
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  header: {
-    backgroundColor: '#067345',
-    padding: 20,
-    alignItems: 'center',
-  },
-  headerText: {
-    color: '#fff',
-    fontSize: 20,
-  },
-  card: {
-    flex: 1,
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    margin: 8,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-  },
-  cardTitle: {
-    fontSize: 20, 
-    fontWeight: 'bold',
-  },
-  cardItem: {
-    fontSize: 16, 
-    marginTop: 8,
-  },
-});
+      ))}
+      </View>
+      </View>
+      );
+    };
+    
+    const styles = StyleSheet.create({
+      header: {
+        textAlign: 'center',
+        backgroundColor: '#333',
+        color: 'white',
+        padding: 20,
+      },
+      headerText: {
+        color: 'white',
+        textAlign: 'center',
+        fontSize: '20px', 
+      },
+      cardContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: 10,
+      },
+        card: {
+          textAlign: 'center',
+          borderWidth: 1,
+          borderColor: '#ccc',
+          padding: 10,
+          marginBottom: 20,
+          shadowColor: 'rgba(0, 0, 0, 0.1)',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.8,
+          borderRadius: 10,
+          marginTop: 20,
+          width: 350,
+        },
+        image: {
+          maxWidth: '100%',
+          height: 200,
+          resizeMode: 'cover',
+        },
+        boldText: {
+          fontWeight: 'bold',
+        },
+      },
+    );
+      
+      export default GarageScreen;
+      
