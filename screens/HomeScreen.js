@@ -82,7 +82,7 @@ const GarageScreen = () => {
     <View style={styles.cardContainer}>
     {vehicles.map((vehicle) => (
       <View key={vehicle.id} style={styles.card}>
-      <Image source={{ uri: vehicle.imageUrl }} style={styles.image} />
+      <Image source={{ uri: vehicle.image[0].file }} style={styles.image} />
       <Text>
       <Text style={styles.boldText}>Descrição:</Text> {vehicle.descricao}
       </Text>
