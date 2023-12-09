@@ -118,7 +118,7 @@ const GarageScreen = () => {
       headerText: {
         color: 'white',
         textAlign: 'center',
-        fontSize: '20px', 
+        // fontSize: '20px', 
       },
       cardContainer: {
         flexDirection: 'row',
