@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 
-const baseURL = 'http://localhost:19003/';
+const baseURL = 'https://garagem-back-dev-znah.3.us-1.fl0.io';
 
 const GarageScreen = () => {
   const [vehicles, setVehicles] = useState([]);
